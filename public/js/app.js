@@ -1,14 +1,32 @@
 ;(function($, window, undefined) {
 	var document = window.document;
 
-	$.ajaxSetup({
+	$.ajax({
+		url: 'http://local.m.sharedcinema.com:3000/users',
+		type: "POST",
+		contentType: "application/json",  
+		headers: {
+			Accept: 'application/json'
+		},                                                          
+		dataType: "json",
+		error: function(res) {
+			console.log("user error")
+			console.log(res.responseText)
+		},
+		success: function(res) {
+			console.log("user response")
+			console.log(res)
+		}
+	});
+
+	/*$.ajaxSetup({
 		type: "GET",
 		dataType: "json",
 		timeout: 5000
 		/*'beforeSend': function(xhr) {
 			xhr.setRequestHeader("Accept", "text/javascript,application/javascript,text/html")
-		}*/
-	});
+		}
+	});*/
 
 	window.scrollTo(0, 1);
 
@@ -88,10 +106,10 @@
 	$(document).on('pageshow', '#search', function() {
 
 		var $searchInput = $('#search .ui-input-search [data-type=search]');
-		console.log($searchInput)
+
 		$searchInput.keyup(function(e) {
 			var _this = this;
-			console.log(_this);
+
 
 			function successResponse(res) {
 				console.log(res);
@@ -169,12 +187,15 @@
 				data: {
 					q: $(_this).val()
 				},
-				//type: "GET",
-				contentType: "application/json; charset=utf-8",                                                            
-				//dataType: "json",
+				type: "GET",
+				contentType: "application/json; charset=utf-8",
+				headers: {
+					Accept: 'application/json'
+				},                                                             
+				dataType: "json",
 				success: successResponse,
 				error: function(msg) {
-					console.log(msg)
+					console.log(msg.responseText)
 				}
 			});
 			//$.getJSON('http://local.m.sharedcinema.com:3000/search?q=' + $(_this).val(), successResponse);
