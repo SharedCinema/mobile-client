@@ -1,35 +1,5 @@
 ;(function($, window, undefined) {
 	var document = window.document;
-
-  var localUser;
-
-	$.ajax({
-		url: 'http://local.m.sharedcinema.com:3000/users',
-		type: "POST",
-		headers: {
-			Accept: 'application/json'
-		},                                                          
-		error: function(res) {
-			console.log("user error")
-			console.log(res.responseText)
-		},
-		success: function(res) {
-			console.log("user response")
-			console.log(res)
-      localUser = res._id
-      console.log("localUser: " + localUser);
-		}
-	});
-
-	/*$.ajaxSetup({
-		type: "GET",
-		dataType: "json",
-		timeout: 5000
-		/*'beforeSend': function(xhr) {
-			xhr.setRequestHeader("Accept", "text/javascript,application/javascript,text/html")
-		}
-	});*/
-
 	window.scrollTo(0, 1);
 
 	$(document).on('pageshow', '#vote', function() {
@@ -107,99 +77,119 @@
 
 	$(document).on('pageshow', '#search', function() {
 
-		var $searchInput = $('#search .ui-input-search [data-type=search]');
+		$.ajax({
+			url: 'http://local.m.sharedcinema.com:3000/users',
+			type: "POST",
+			headers: {
+				"Accept": 'application/json'
+			},                                                          
+			error: function(res) {
+				console.log("user error")
+				console.log(res.responseText)
+			},
+			success: function(res) {
+				console.log("user response")
+				console.log(res)
 
-		$searchInput.keyup(function(e) {
-			var _this = this;
+				var userID = res._id;
+				var timer = null;
+				var $searchInput = $('#search .ui-input-search [data-type=search]');
 
+				$searchInput.keyup(function(e) {
+					var _this = this;
 
-			function successResponse(res) {
-				console.log(res);
-				return;
-				var list = $('#search-list');
-				list.html('');
+					clearTimeout(timer); 
+       				timer = setTimeout(function() {
+       					$.ajax({
+							url: 'http://local.m.sharedcinema.com:3000/search',
+							data: {
+								q: $(_this).val(),
+								user_id: userID
+							},
+							type: "GET",
+							headers: {
+								Accept: 'application/json'
+							},                                                             
+							success: successResponse,
+							error: function(msg) {
+								console.log(msg.responseText)
+							}
+						});
+       				}, 1000)
 
-				$.each(res.videos, function(index, video) {
-					//List element
-					var li = document.createElement('li');
+					function successResponse(res) {
+						console.log(res);
+						return;
+						var list = $('#search-list');
+						list.html('');
 
-					//Anchor element
-					var a  = document.createElement('a');
-					a.href = '#';
-					//a.innerHTML = video.title;
+						$.each(res.videos, function(index, video) {
+							//List element
+							var li = document.createElement('li');
 
-					//Left
-					var left = document.createElement('div');
-					left.className += ' video-list-left';
+							//Anchor element
+							var a  = document.createElement('a');
+							a.href = '#';
+							//a.innerHTML = video.title;
 
-					//Image
-					var img = document.createElement('img');
-					img.className += ' video-list-img';
-					img.src = video.thumb;
-					left.appendChild(img);
+							//Left
+							var left = document.createElement('div');
+							left.className += ' video-list-left';
 
-					//Right
-					var right = document.createElement('div');
-					right.className += ' video-list-right';
+							//Image
+							var img = document.createElement('img');
+							img.className += ' video-list-img';
+							img.src = video.thumb;
+							left.appendChild(img);
 
-					//Title
-					var h3 = document.createElement('h3');
-					h3.innerHTML = video.title;
-					right.appendChild(h3);
+							//Right
+							var right = document.createElement('div');
+							right.className += ' video-list-right';
 
-					//Description
-					var span = document.createElement('span');
-					span.innerHTML = video.desc;
-					right.appendChild(span);
+							//Title
+							var h3 = document.createElement('h3');
+							h3.innerHTML = video.title;
+							right.appendChild(h3);
 
-					//Append left and right to anchor
-					a.appendChild(left);
-					a.appendChild(right);
+							//Description
+							var span = document.createElement('span');
+							span.innerHTML = video.desc;
+							right.appendChild(span);
 
-					//Thumb
-					var thumb = document.createElement('button');
-					thumb.className += ' thumb';
-					thumb.type = 'button';
-					thumb.innerHTML = '&nbsp;';
-					a.appendChild(thumb);
+							//Append left and right to anchor
+							a.appendChild(left);
+							a.appendChild(right);
 
-					//Append anchor to list
-					li.appendChild(a);
+							//Thumb
+							var thumb = document.createElement('button');
+							thumb.className += ' thumb';
+							thumb.type = 'button';
+							thumb.innerHTML = '&nbsp;';
+							a.appendChild(thumb);
 
-					//Append list element to list
-					list.append(li);
-					//list.append('<li><a href="#">'+video.title+'</a></li>');
-				});
+							//Append anchor to list
+							li.appendChild(a);
 
-				list.listview('refresh');
+							//Append list element to list
+							list.append(li);
+							//list.append('<li><a href="#">'+video.title+'</a></li>');
+						});
 
-				list.on('click', function(e) {
-					e.preventDefault();
+						list.listview('refresh');
 
-					if(e.target.tagName == "BUTTON") {
-						var el = e.target;
+						list.on('click', function(e) {
+							e.preventDefault();
 
-						console.log("I am the upvote button");
+							if(e.target.tagName == "BUTTON") {
+								var el = e.target;
+
+								console.log("I am the upvote button");
+							}
+						});
 					}
 				});
-			}
 
-			$.ajax({
-				url: 'http://local.m.sharedcinema.com:3000/search',
-				data: {
-					q: $(_this).val(),
-          user_id: localUser
-				},
-				type: "GET",
-				headers: {
-					Accept: 'application/json'
-				},                                                             
-				success: successResponse,
-				error: function(msg) {
-					console.log(msg.responseText)
-				}
-			});
-			//$.getJSON('http://local.m.sharedcinema.com:3000/search?q=' + $(_this).val(), successResponse);
+			}
 		});
 	});
 
