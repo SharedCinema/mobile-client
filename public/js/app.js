@@ -86,9 +86,9 @@
 		//Is userID in localstorage?
 		var userID = localStorage.getItem('sc-userID');
 
-		if(userID) {console.log(1)
+		if(userID) {
 			userSuccessResponse(userID);
-		} else {console.log(2)
+		} else {
 			$.ajax({
 				url: 'http://local.m.sharedcinema.com:3000/users',
 				type: "POST",
