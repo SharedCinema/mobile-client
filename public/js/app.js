@@ -1,14 +1,14 @@
 ;(function($, window, undefined) {
 	var document = window.document;
 
+  var localUser;
+
 	$.ajax({
 		url: 'http://local.m.sharedcinema.com:3000/users',
 		type: "POST",
-		contentType: "application/json",  
 		headers: {
 			Accept: 'application/json'
 		},                                                          
-		dataType: "json",
 		error: function(res) {
 			console.log("user error")
 			console.log(res.responseText)
@@ -16,6 +16,8 @@
 		success: function(res) {
 			console.log("user response")
 			console.log(res)
+      localUser = res._id
+      console.log("localUser: " + localUser);
 		}
 	});
 
@@ -185,14 +187,13 @@
 			$.ajax({
 				url: 'http://local.m.sharedcinema.com:3000/search',
 				data: {
-					q: $(_this).val()
+					q: $(_this).val(),
+          user_id: localUser
 				},
 				type: "GET",
-				contentType: "application/json; charset=utf-8",
 				headers: {
 					Accept: 'application/json'
 				},                                                             
-				dataType: "json",
 				success: successResponse,
 				error: function(msg) {
 					console.log(msg.responseText)
