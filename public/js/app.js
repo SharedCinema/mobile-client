@@ -115,7 +115,7 @@
 								console.log(msg.responseText)
 							}
 						});
-       				}, 1000)
+       				}, 500)
 
 					function successResponse(res) {
 						console.log(res);
