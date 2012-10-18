@@ -1,0 +1,23 @@
+{
+  "name": "sc-mobile",
+  "subdomain": "scm",
+  "domains": [
+    "m.sharedcinema.com"
+  ],
+  "scripts": {
+    "start": "node bin/server"
+  },
+  "version": "0.0.1-5",
+  "engines": {
+    "node": "0.8.x"
+  },
+  "dependencies": {
+    "colors": "*",
+    "ecstatic": "*",
+    "http-server": "0.5.1",
+    "optimist": "*",
+    "request": "*",
+    "union": "*",
+    "vows": "*"
+  }
+}
