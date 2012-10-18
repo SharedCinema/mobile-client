@@ -2,6 +2,8 @@
 	var document = window.document;
 	window.scrollTo(0, 1);
 
+	var url = 'http://p.sharedcinema.com';
+
 	$(document).on('pageshow', '#vote', function() {
 
 		$.getJSON('data/videos.json', function(res) {
@@ -90,7 +92,7 @@
 			userSuccessResponse(userID);
 		} else {
 			$.ajax({
-				url: 'http://local.m.sharedcinema.com:3000/users',
+				url: url + '/users',
 				type: "POST",
 				headers: {
 					"Accept": 'application/json'
@@ -189,7 +191,7 @@
 			clearTimeout(timer); 
 			timer = setTimeout(function() {
 				$.ajax({
-					url: 'http://local.m.sharedcinema.com:3000/search',
+					url: url + '/search',
 					data: {
 						q: $(_this).val(),
 						user_id: userID
