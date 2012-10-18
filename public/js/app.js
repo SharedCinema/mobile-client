@@ -78,7 +78,7 @@
 	$(document).on('pageshow', '#search', function() {
 
 		$.ajax({
-			url: 'http://local.m.sharedcinema.com:3000/users',
+			url: 'http://rknla.shared_cinema_node.jit.su/users',
 			type: "POST",
 			headers: {
 				"Accept": 'application/json'
@@ -101,7 +101,7 @@
 					clearTimeout(timer); 
        				timer = setTimeout(function() {
        					$.ajax({
-							url: 'http://local.m.sharedcinema.com:3000/search',
+							url: 'http://rknla.shared_cinema_node.jit.su/search',
 							data: {
 								q: $(_this).val(),
 								user_id: userID
